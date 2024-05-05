@@ -23,12 +23,17 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.VertexFormatElement;
 import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.PickFromInventoryC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
@@ -412,12 +417,12 @@ public class SlotRefiller {
 	public static class FoodRule extends Rule {
 		@Override
 		boolean matches(ItemStack oldStack) {
-			return MWConfig.refill.rules.food && oldStack.isFood();
+			return MWConfig.refill.rules.food && oldStack.getComponents().contains(DataComponentTypes.FOOD);
 		}
 
 		@Override
 		int findMatchingStack(PlayerInventory playerInventory, ItemStack oldStack) {
-			return iterateInventory(playerInventory, ItemStack::isFood);
+			return iterateInventory(playerInventory, itemStack -> itemStack.getComponents().contains(DataComponentTypes.FOOD));
 		}
 	}
 

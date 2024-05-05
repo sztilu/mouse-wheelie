@@ -21,6 +21,9 @@ import de.siphalor.mousewheelie.common.network.MWNetworking;
 import de.siphalor.mousewheelie.common.network.ReorderInventoryPacket;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.CustomPayload;
+import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 public class MWClientNetworking extends MWNetworking {
 

@@ -57,7 +57,7 @@ public class MWConfig {
 		public boolean enableQuickCraft = true;
 
 		@AConfigEntry(comment = "Whether item types should check nbt data.\nThis is for example used by scrolling and drop-clicking.\nNONE disables this, ALL checks for exactly the same nbt and SOME allows for differences in damage and enchantments.")
-		public ItemStackUtils.NbtMatchMode itemKindsNbtMatchMode = ItemStackUtils.NbtMatchMode.SOME;
+		public ItemStackUtils.ComponentTypeMatchMode itemComponentMatchMode = ItemStackUtils.ComponentTypeMatchMode.SOME;
 
 		public enum HotbarScoping {HARD, SOFT, NONE}
 

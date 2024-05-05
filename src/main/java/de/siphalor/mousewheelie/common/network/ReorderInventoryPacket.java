@@ -45,4 +45,12 @@ public class ReorderInventoryPacket {
 
 		return new ReorderInventoryPacket(syncId, reorderedIndices);
 	}
+    
+    public int getSyncId() {
+		return syncId;
+    }
+	
+	public int[] getSlotMappings() {
+		return slotMappings;
+	}
 }

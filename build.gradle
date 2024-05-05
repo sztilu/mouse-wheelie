@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.4-SNAPSHOT'
+    id 'fabric-loom' version '1.6-SNAPSHOT'
     id 'maven-publish'
 	id 'com.matthewprenger.cursegradle' version '1.4.0'
 	id 'com.modrinth.minotaur' version '2.1.1'
@@ -7,8 +7,8 @@ plugins {
 	id 'com.github.breadmoirai.github-release' version '2.2.12'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version + "+mc" + project.minecraft_version
@@ -38,6 +38,8 @@ dependencies {
 	compileOnly(annotationProcessor("org.projectlombok:lombok:$lombok_version"))
 	testCompileOnly(testAnnotationProcessor("org.projectlombok:lombok:$lombok_version"))
 
+	//modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
+
 	def fabric_deps = [
 	        'fabric-api-base',
             'fabric-events-interaction-v0',
@@ -49,10 +51,10 @@ dependencies {
 			'fabric-registry-sync-v0',
 			'fabric-screen-api-v1'
 	]
-	fabric_deps.forEach { include(modImplementation(fabricApi.module(it, fabric_api_version)))}
-	modImplementation(fabricApi.module("fabric-item-group-api-v1", fabric_api_version))
+	fabric_deps.forEach { include(modImplementation(fabricApi.module(it, fabric_version)))}
+	modImplementation(fabricApi.module("fabric-item-group-api-v1", fabric_version))
 
-	modApi("com.terraformersmc:modmenu:9.0.0-pre.1")
+	modApi("com.terraformersmc:modmenu:10.0.0-beta.1")
 
 	include(modApi(platform("de.siphalor.tweed4:tweed4-bom-$minecraft_major_version:$tweed_version")))
 	def tweed_deps = [
