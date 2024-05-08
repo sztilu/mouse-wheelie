@@ -17,26 +17,19 @@
 
 package de.siphalor.mousewheelie.client.network;
 
-import de.siphalor.mousewheelie.common.network.MWNetworking;
-import de.siphalor.mousewheelie.common.network.ReorderInventoryPacket;
+import de.siphalor.mousewheelie.common.network.ReorderInventoryPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.network.packet.c2s.common.CustomPayloadC2SPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
 
-public class MWClientNetworking extends MWNetworking {
+public class MWClientNetworking {
 
 	private static int blockNextGuiUpdateRefillTriggers;
 
 	public static boolean canSendReorderPacket() {
-		return ClientPlayNetworking.canSend(REORDER_INVENTORY_C2S_PACKET);
+		return ClientPlayNetworking.canSend(ReorderInventoryPayload.ID);
 	}
 
-	public static void send(ReorderInventoryPacket packet) {
-		PacketByteBuf buffer = createBuffer();
-		packet.write(buffer);
-		ClientPlayNetworking.send(REORDER_INVENTORY_C2S_PACKET, buffer);
+	public static void send(ReorderInventoryPayload payload) {
+		ClientPlayNetworking.send(payload);
 	}
 
 	public static synchronized void blockNextGuiUpdateRefillTriggers(int amount) {

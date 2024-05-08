@@ -22,7 +22,7 @@ import de.siphalor.mousewheelie.client.inventory.ContainerScreenHelper;
 import de.siphalor.mousewheelie.client.network.InteractionManager;
 import de.siphalor.mousewheelie.client.network.MWClientNetworking;
 import de.siphalor.mousewheelie.client.util.inject.ISlot;
-import de.siphalor.mousewheelie.common.network.ReorderInventoryPacket;
+import de.siphalor.mousewheelie.common.network.ReorderInventoryPayload;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -154,7 +154,7 @@ public class InventorySorter {
 			slotMappings[i * 2 + 1] = ((ISlot) to).mouseWheelie_getIdInContainer();
 		}
 		InteractionManager.push(() -> {
-			MWClientNetworking.send(new ReorderInventoryPacket(containerScreen.getScreenHandler().syncId, slotMappings));
+			MWClientNetworking.send(new ReorderInventoryPayload(containerScreen.getScreenHandler().syncId, slotMappings));
 			return InteractionManager.TICK_WAITER;
 		});
 	}
