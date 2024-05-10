@@ -295,7 +295,7 @@ public abstract class MixinAbstractContainerScreen extends Screen implements ICo
 			return false;
 		
 		InventorySorter sorter = new InventorySorter(screenHelper.get(), (HandledScreen<?>) (Object) this, focusedSlot);
-		MWConfig.SORTMODES sortMode;
+		MWConfig.SortModes sortMode;
 		if (hasShiftDown()) {
 			sortMode = MWConfig.shiftSort;
 		} else if (hasControlDown()) {

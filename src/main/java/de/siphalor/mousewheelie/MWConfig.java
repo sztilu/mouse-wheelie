@@ -19,7 +19,7 @@ package de.siphalor.mousewheelie;
 
 import de.siphalor.mousewheelie.client.util.ItemStackUtils;
 import dev.isxander.yacl3.api.*;
-import dev.isxander.yacl3.api.controller.EnumDropdownControllerBuilder;
+import dev.isxander.yacl3.api.controller.EnumControllerBuilder;
 import dev.isxander.yacl3.api.controller.IntegerFieldControllerBuilder;
 import dev.isxander.yacl3.api.controller.TickBoxControllerBuilder;
 import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
@@ -89,14 +89,16 @@ public class MWConfig {
                                 .name(Text.translatable("config.screen.mousewheelie.general.item-kinds-nbt-match-mode"))
                                 .description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.general.item-kinds-nbt-match-mode.description")))
                                 .binding(ItemStackUtils.ComponentTypeMatchMode.SOME, () -> itemComponentMatchMode, value -> itemComponentMatchMode = value)
-                                .controller(EnumDropdownControllerBuilder::create)
+                                .controller(opt -> EnumControllerBuilder.create(opt)
+                                        .enumClass(ItemStackUtils.ComponentTypeMatchMode.class))
                                 .build()
                         )
                         .option(Option.<HotbarScoping>createBuilder()
                                 .name(Text.translatable("config.screen.mousewheelie.general.hotbar-scoping"))
                                 .description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.general.hotbar-scoping.description")))
                                 .binding(HotbarScoping.SOFT, () -> hotbarScoping, value -> hotbarScoping = value)
-                                .controller(EnumDropdownControllerBuilder::create)
+                                .controller(opt -> EnumControllerBuilder.create(opt)
+                                        .enumClass(HotbarScoping.class))
                                 .build()
                         )
                         .option(Option.<Boolean>createBuilder()
@@ -157,25 +159,28 @@ public class MWConfig {
                 .category(ConfigCategory.createBuilder()
                         .name(Text.translatable("config.screen.mousewheelie.sort"))
                         .tooltip(Text.translatable("config.screen.mousewheelie.sort.description"))
-                        .option(Option.<SORTMODES>createBuilder()
+                        .option(Option.<SortModes>createBuilder()
                                 .name(Text.translatable("config.screen.mousewheelie.sort.primary-sort"))
                                 .description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.sort.primary-sort.description")))
-                                .binding(SORTMODES.CREATIVE, () -> primarySort, value -> primarySort = value)
-                                .controller(EnumDropdownControllerBuilder::create)
+                                .binding(SortModes.CREATIVE, () -> primarySort, value -> primarySort = value)
+                                .controller(opt -> EnumControllerBuilder.create(opt)
+                                        .enumClass(SortModes.class))
                                 .build()
                         )
-                        .option(Option.<SORTMODES>createBuilder()
+                        .option(Option.<SortModes>createBuilder()
                                 .name(Text.translatable("config.screen.mousewheelie.sort.shift-sort"))
                                 .description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.sort.shift-sort.description")))
-                                .binding(SORTMODES.QUANTITY, () -> shiftSort, value -> shiftSort = value)
-                                .controller(EnumDropdownControllerBuilder::create)
+                                .binding(SortModes.QUANTITY, () -> shiftSort, value -> shiftSort = value)
+                                .controller(opt -> EnumControllerBuilder.create(opt)
+                                        .enumClass(SortModes.class))
                                 .build()
                         )
-                        .option(Option.<SORTMODES>createBuilder()
+                        .option(Option.<SortModes>createBuilder()
                                 .name(Text.translatable("config.screen.mousewheelie.sort.control-sort"))
                                 .description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.sort.control-sort.description")))
-                                .binding(SORTMODES.ALPHABET, () -> controlSort, value -> controlSort = value)
-                                .controller(EnumDropdownControllerBuilder::create)
+                                .binding(SortModes.ALPHABET, () -> controlSort, value -> controlSort = value)
+                                .controller(opt -> EnumControllerBuilder.create(opt)
+                                        .enumClass(SortModes.class))
                                 .build()
                         )
                         .option(Option.<Boolean>createBuilder()
@@ -395,18 +400,18 @@ public class MWConfig {
     
     
     // Sort
-    public enum SORTMODES {
+    public enum SortModes {
         NONE, ALPHABET, CREATIVE, QUANTITY, RAW_ID
     }
 	
 	@SerialEntry
-    public static SORTMODES primarySort = SORTMODES.CREATIVE;
+    public static SortModes primarySort = SortModes.CREATIVE;
 	
 	@SerialEntry
-    public static SORTMODES shiftSort = SORTMODES.QUANTITY;
+    public static SortModes shiftSort = SortModes.QUANTITY;
 	
 	@SerialEntry
-    public static SORTMODES controlSort = SORTMODES.ALPHABET;
+    public static SortModes controlSort = SortModes.ALPHABET;
 	
 	@SerialEntry
     public static boolean serverAcceleratedSorting = true;

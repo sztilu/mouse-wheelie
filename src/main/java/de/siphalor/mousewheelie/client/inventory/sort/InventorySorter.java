@@ -132,7 +132,7 @@ public class InventorySorter {
 		}
 	}
 
-	public void sort(MWConfig.SORTMODES sortMode) {
+	public void sort(MWConfig.SortModes sortMode) {
 		if (inventorySlots.length <= 1) {
 			return;
 		}
