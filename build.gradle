@@ -42,33 +42,9 @@ dependencies {
 	compileOnly(annotationProcessor("org.projectlombok:lombok:$lombok_version"))
 	testCompileOnly(testAnnotationProcessor("org.projectlombok:lombok:$lombok_version"))
 
-	//modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
+	modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
 
-	def fabric_deps = [
-	        'fabric-api-base',
-            'fabric-events-interaction-v0',
-			'fabric-item-api-v1',
-			'fabric-lifecycle-events-v1',
-			'fabric-key-binding-api-v1',
-            'fabric-networking-api-v1',
-			'fabric-resource-loader-v0',
-			'fabric-registry-sync-v0',
-			'fabric-screen-api-v1'
-	]
-	fabric_deps.forEach { include(modImplementation(fabricApi.module(it, fabric_version)))}
-	modImplementation(fabricApi.module("fabric-item-group-api-v1", fabric_version))
-
-	modApi("com.terraformersmc:modmenu:10.0.0-beta.1")
-
-//	include(modApi(platform("de.siphalor.tweed4:tweed4-bom-$minecraft_major_version:$tweed_version")))
-//	def tweed_deps = [
-//	        "base", "annotated",
-//			"data", "data-hjson",
-//			"tailor-screen", "tailor-coat",
-//			"tailor-lang-json-descriptions"
-//	]
-//	tweed_deps.forEach { include(modApi("de.siphalor.tweed4:tweed4-$it-$minecraft_major_version")) { exclude module: 'modmenu'} }
-//	include(modApi("de.siphalor:coat-$minecraft_major_version:$coat_version"))
+	modApi("com.terraformersmc:modmenu:${project.modmenu_version}")
 
 	modImplementation("dev.isxander:yet-another-config-lib:${project.yacl_version}-fabric")
 
@@ -84,8 +60,6 @@ configurations.include.dependencies.each {
 		it.transitive = false
 	}
 }
-
-//sourceSets.main.java.exclude("**/ModMenu*")
 
 license {
 	header = project.file('LICENSE_HEADER')

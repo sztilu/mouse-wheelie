@@ -36,6 +36,6 @@ public class ScrollKeyBinding extends AmecsKeyBinding implements PriorityKeyBind
 
 	@Override
 	public boolean onPressedPriority() {
-		return MWClient.triggerScroll(MWClient.getMouseX(), MWClient.getMouseY(), scrollDown == MWConfig.invert ? -1D : 1D);
+		return MWClient.triggerScroll(MWClient.getMouseX(), MWClient.getMouseY(), scrollDown == MWConfig.invertScrolling ? -1D : 1D);
 	}
 }

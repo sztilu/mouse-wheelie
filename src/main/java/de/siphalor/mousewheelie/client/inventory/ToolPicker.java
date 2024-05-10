@@ -42,7 +42,7 @@ public class ToolPicker {
 	public int findToolFor(BlockState blockState) {
 		float bestBreakSpeed = 1.0F;
 		int bestSpeedSlot = -1;
-		int invSize = (MWConfig.toolPicking.pickFromInventory ? inventory.main.size() : 9);
+		int invSize = (MWConfig.pickFromInventory ? inventory.main.size() : 9);
 		for (int i = 1; i <= invSize; i++) {
 			int index = (i + lastToolPickSlot) % invSize;
 			if (index == inventory.selectedSlot) continue;
@@ -70,7 +70,7 @@ public class ToolPicker {
 	}
 
 	public int findWeapon() {
-		int invSize = (MWConfig.toolPicking.pickFromInventory ? inventory.main.size() : 9);
+		int invSize = (MWConfig.pickFromInventory ? inventory.main.size() : 9);
 		for (int i = 1; i <= invSize; i++) {
 			int index = (i + lastToolPickSlot) % invSize;
 			if (index == inventory.selectedSlot) continue;

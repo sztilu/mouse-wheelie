@@ -20,10 +20,8 @@ package de.siphalor.mousewheelie.client.keybinding;
 import de.siphalor.amecs.api.AmecsKeyBinding;
 import de.siphalor.amecs.api.KeyModifiers;
 import de.siphalor.amecs.api.PriorityKeyBinding;
+import de.siphalor.mousewheelie.MWConfig;
 import de.siphalor.mousewheelie.MouseWheelie;
-import de.siphalor.tweed4.config.TweedRegistry;
-import de.siphalor.tweed4.tailor.coat.CoatTailor;
-import de.siphalor.tweed4.tailor.screen.ScreenTailorScreenFactory;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -39,14 +37,7 @@ public class OpenConfigScreenKeybinding extends AmecsKeyBinding implements Prior
 	public boolean onPressedPriority() {
 		MinecraftClient minecraftClient = MinecraftClient.getInstance();
 		if (minecraftClient.currentScreen == null || minecraftClient.currentScreen instanceof HandledScreen || minecraftClient.currentScreen instanceof TitleScreen) {
-			TweedRegistry.TAILORS.getOrEmpty(new Identifier("tweed4", "coat")).ifPresent(tailor -> {
-				if (tailor instanceof CoatTailor) {
-					ScreenTailorScreenFactory<?> screenFactory = ((CoatTailor) tailor).getScreenFactories().get(MouseWheelie.MOD_ID);
-					if (screenFactory != null) {
-						minecraftClient.setScreen(screenFactory.create(minecraftClient.currentScreen));
-					}
-				}
-			});
+			minecraftClient.setScreen(MWConfig.createConfigScreen(minecraftClient.currentScreen));
 			return true;
 		}
 		return false;

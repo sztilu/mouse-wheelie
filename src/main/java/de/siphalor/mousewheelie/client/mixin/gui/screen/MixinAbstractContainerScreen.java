@@ -257,7 +257,7 @@ public abstract class MixinAbstractContainerScreen extends Screen implements ICo
 
 	@Override
 	public ScrollAction mouseWheelie_onMouseScroll(double mouseX, double mouseY, double scrollAmount) {
-		if (MWConfig.enable) {
+		if (MWConfig.enableScrolling) {
 			if (hasAltDown()) return ScrollAction.FAILURE;
 			Slot hoveredSlot = getSlotAt(mouseX, mouseY);
 			if (hoveredSlot == null)

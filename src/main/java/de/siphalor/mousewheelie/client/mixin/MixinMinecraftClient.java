@@ -45,7 +45,7 @@ public abstract class MixinMinecraftClient {
 
 	@Inject(method = "doItemUse", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Hand;values()[Lnet/minecraft/util/Hand;"))
 	public void onItemUse(CallbackInfo callbackInfo) {
-		if (MWConfig.refill.enable && MWConfig.refill.use) {
+		if (MWConfig.enableRefill && MWConfig.refillOnUse) {
 			mainHandStack = player.getMainHandStack();
 			mainHandStack = mainHandStack.isEmpty() ? null : mainHandStack.copy();
 			offHandStack = player.getOffHandStack();

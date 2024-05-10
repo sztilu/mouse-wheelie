@@ -89,7 +89,7 @@ public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScre
 			}
 		}
 
-		if (MWConfig.enable && !isInventoryTabSelected()) {
+		if (MWConfig.enableScrolling && !isInventoryTabSelected()) {
 			if (MWConfig.scrollCreativeMenuItems == hasAltDown())
 				return ScrollAction.ABORT;
 			Slot hoverSlot = this.mouseWheelie_getSlotAt(mouseX, mouseY);

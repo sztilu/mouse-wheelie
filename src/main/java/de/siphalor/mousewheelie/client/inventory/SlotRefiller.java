@@ -23,17 +23,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.VertexFormatElement;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.FoodComponent;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.PickFromInventoryC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
-import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.collection.DefaultedList;
@@ -80,7 +76,7 @@ public class SlotRefiller {
 			return false;
 		}
 
-		if (!oldStack.isEmpty() && (newStack.isEmpty() || (MWConfig.refill.itemChanges && oldStack.getItem() != newStack.getItem()))) {
+		if (!oldStack.isEmpty() && (newStack.isEmpty() || (MWConfig.itemChanges && oldStack.getItem() != newStack.getItem()))) {
 			scheduleRefillUnchecked(hand, inventory, oldStack.copy());
 			return true;
 		}
@@ -103,7 +99,7 @@ public class SlotRefiller {
 
 		Hand hand = refillHand;
 		refillHand = null;
-		if (hand == Hand.OFF_HAND && !MWConfig.refill.offHand) {
+		if (hand == Hand.OFF_HAND && !MWConfig.offHandRefill) {
 			return false;
 		}
 		refill(hand);
@@ -168,13 +164,13 @@ public class SlotRefiller {
 	}
 
 	private static void scheduleRefillSound() {
-		if (MWConfig.refill.playSound) {
+		if (MWConfig.playSound) {
 			InteractionManager.delay(SlotRefiller::playRefillSound, Duration.of(200, ChronoUnit.MILLIS));
 		}
 	}
 
 	private static void playRefillSound() {
-		if (MWConfig.refill.playSound) {
+		if (MWConfig.playSound) {
 			MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(SoundEvents.ENTITY_ITEM_PICKUP, 0.2F, 1F));
 		}
 	}
@@ -194,7 +190,7 @@ public class SlotRefiller {
 	}
 
 	private static void refillFromHotbar(Hand hand, int hotbarSlot) {
-		if (MWConfig.refill.restoreSelectedSlot) {
+		if (MWConfig.restoreSelectedSlot) {
 			if (hand == Hand.MAIN_HAND && !playerInventory.offHand.get(0).isEmpty()) {
 				InteractionManager.push(InteractionManager.SWAP_WITH_OFFHAND_EVENT);
 			}
@@ -296,7 +292,7 @@ public class SlotRefiller {
 	public static class BlockRule extends Rule {
 		@Override
 		boolean matches(ItemStack oldStack) {
-			return MWConfig.refill.rules.anyBlock && oldStack.getItem() instanceof BlockItem;
+			return MWConfig.refillAnyBlock && oldStack.getItem() instanceof BlockItem;
 		}
 
 		@Override
@@ -313,7 +309,7 @@ public class SlotRefiller {
 
 		@Override
 		boolean matches(ItemStack oldStack) {
-			if (!MWConfig.refill.rules.itemgroup) {
+			if (!MWConfig.refillItemgroup) {
 				return false;
 			}
 			for (ItemGroup group : ItemGroups.getGroups()) {
@@ -349,7 +345,7 @@ public class SlotRefiller {
 	public static class ItemHierarchyRule extends Rule {
 		@Override
 		boolean matches(ItemStack oldStack) {
-			return MWConfig.refill.rules.itemHierarchy && oldStack.getItem().getClass() != Item.class && !(oldStack.getItem() instanceof BlockItem);
+			return MWConfig.refillItemHierarchy && oldStack.getItem().getClass() != Item.class && !(oldStack.getItem() instanceof BlockItem);
 		}
 
 		@Override
@@ -361,7 +357,7 @@ public class SlotRefiller {
 	public static class BlockHierarchyRule extends Rule {
 		@Override
 		boolean matches(ItemStack oldStack) {
-			return MWConfig.refill.rules.blockHierarchy && oldStack.getItem() instanceof BlockItem;
+			return MWConfig.refillBlockHierarchy && oldStack.getItem() instanceof BlockItem;
 		}
 
 		@Override
@@ -417,7 +413,7 @@ public class SlotRefiller {
 	public static class FoodRule extends Rule {
 		@Override
 		boolean matches(ItemStack oldStack) {
-			return MWConfig.refill.rules.food && oldStack.getComponents().contains(DataComponentTypes.FOOD);
+			return MWConfig.refillAnyFood && oldStack.getComponents().contains(DataComponentTypes.FOOD);
 		}
 
 		@Override
@@ -429,7 +425,7 @@ public class SlotRefiller {
 	public static class EqualItemRule extends Rule {
 		@Override
 		boolean matches(ItemStack oldStack) {
-			return MWConfig.refill.rules.equalItems;
+			return MWConfig.refillEqualItems;
 		}
 
 		@Override
@@ -442,7 +438,7 @@ public class SlotRefiller {
 	public static class EqualStackRule extends Rule {
 		@Override
 		boolean matches(ItemStack oldStack) {
-			return MWConfig.refill.rules.equalStacks;
+			return MWConfig.refillEqualStacks;
 		}
 
 		@Override
