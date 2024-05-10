@@ -138,7 +138,7 @@ public class InventorySorter {
 
 		sortIds = sortMode.sort(sortIds, stacks, new SortContext(containerScreen, Arrays.asList(inventorySlots)));
 
-		if (MWConfig.sort.serverAcceleratedSorting && MWClientNetworking.canSendReorderPacket()) {
+		if (MWConfig.serverAcceleratedSorting && MWClientNetworking.canSendReorderPacket()) {
 			this.reorderInventory(sortIds);
 		} else {
 			this.sortOnClient(sortIds);

@@ -74,7 +74,7 @@ public abstract class MixinRecipeBookResults implements IRecipeBookResults {
 
 	@Inject(method = "mouseClicked", at = @At(value = "JUMP", opcode = 154), locals = LocalCapture.CAPTURE_FAILSOFT)
 	public void mouseClicked(double mouseX, double mouseY, int button, int areaLeft, int areaTop, int areaWidth, int areaHeight, CallbackInfoReturnable<Boolean> cir, Iterator<?> iterator, AnimatedResultButton animatedResultButton) {
-		if (MWConfig.general.enableQuickCraft && button == 1 && animatedResultButton.hasResults()) {
+		if (MWConfig.enableQuickCraft && button == 1 && animatedResultButton.hasResults()) {
 			lastClickedRecipe = animatedResultButton.currentRecipe();
 			resultCollection = animatedResultButton.getResultCollection();
 		}

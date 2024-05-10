@@ -18,99 +18,215 @@
 package de.siphalor.mousewheelie;
 
 import com.google.common.base.CaseFormat;
+import com.terraformersmc.modmenu.config.option.BooleanConfigOption;
 import de.siphalor.mousewheelie.client.MWClient;
 import de.siphalor.mousewheelie.client.inventory.sort.SortMode;
 import de.siphalor.mousewheelie.client.network.InteractionManager;
 import de.siphalor.mousewheelie.client.util.CreativeSearchOrder;
 import de.siphalor.mousewheelie.client.util.ItemStackUtils;
-import de.siphalor.tweed4.annotated.*;
-import de.siphalor.tweed4.config.ConfigEnvironment;
-import de.siphalor.tweed4.config.ConfigScope;
-import de.siphalor.tweed4.config.constraints.RangeConstraint;
-import de.siphalor.tweed4.data.DataList;
-import de.siphalor.tweed4.data.DataObject;
-import de.siphalor.tweed4.data.DataValue;
+
+import dev.isxander.yacl3.api.*;
+import dev.isxander.yacl3.api.controller.*;
+import dev.isxander.yacl3.config.v2.api.ConfigClassHandler;
+import dev.isxander.yacl3.config.v2.api.SerialEntry;
+import dev.isxander.yacl3.config.v2.api.autogen.TickBox;
+import dev.isxander.yacl3.config.v2.api.serializer.GsonConfigSerializerBuilder;
+import dev.isxander.yacl3.gui.controllers.cycling.EnumController;
+import dev.isxander.yacl3.gui.controllers.dropdown.AbstractDropdownController;
+import dev.isxander.yacl3.gui.controllers.string.number.IntegerFieldController;
+import dev.isxander.yacl3.impl.controller.AbstractControllerBuilderImpl;
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
+
+import java.awt.*;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-@ATweedConfig(environment = ConfigEnvironment.CLIENT, scope = ConfigScope.SMALLEST, tailors = {"tweed4:lang_json_descriptions", "tweed4:coat"}, casing = CaseFormat.LOWER_HYPHEN)
-@AConfigBackground("textures/block/green_concrete_powder.png")
 public class MWConfig {
-	@AConfigEntry(comment = "General settings")
-	public static General general = new General();
-
-	@AConfigBackground("textures/block/acacia_log.png")
-	public static class General {
-		@AConfigEntry(
-				constraints = @AConfigConstraint(value = RangeConstraint.class, param = "1..")
-		)
-		public int interactionRate = 10;
-		@AConfigEntry(
-				constraints = @AConfigConstraint(value = RangeConstraint.class, param = "1..")
-		)
-		public int integratedInteractionRate = 1;
-
-		@AConfigEntry(environment = ConfigEnvironment.UNIVERSAL)
-		public boolean enableQuickArmorSwapping = true;
-
-		public boolean enableDropModifier = true;
-
-		public boolean enableQuickCraft = true;
-
-		@AConfigEntry(comment = "Whether item types should check nbt data.\nThis is for example used by scrolling and drop-clicking.\nNONE disables this, ALL checks for exactly the same nbt and SOME allows for differences in damage and enchantments.")
-		public ItemStackUtils.ComponentTypeMatchMode itemComponentMatchMode = ItemStackUtils.ComponentTypeMatchMode.SOME;
-
-		public enum HotbarScoping {HARD, SOFT, NONE}
-
-		public HotbarScoping hotbarScoping = HotbarScoping.SOFT;
-
-		public boolean betterFastDragging = false;
-
-		@AConfigEntry(comment = "Enables dragging bundles while holding right-click to pick up or put out multiple stacks in a single swipe.")
-		public boolean enableBundleDragging = true;
-
-		@AConfigListener("interaction-rate")
-		public void onReloadInteractionRate() {
-			if (!MWClient.isOnLocalServer()) {
-				InteractionManager.setTickRate(interactionRate);
-			}
-		}
-
-		@AConfigListener("integrated-interaction-rate")
-		public void onReloadIntegratedInteractionRate() {
-			if (MWClient.isOnLocalServer()) {
-				InteractionManager.setTickRate(integratedInteractionRate);
-			}
-		}
+	
+	public static ConfigClassHandler<MWConfig> HANDLER = ConfigClassHandler.createBuilder(MWConfig.class)
+			.id(new Identifier("mouse wheelie config"))
+			.serializer(config -> GsonConfigSerializerBuilder.create(config)
+					.setPath(FabricLoader.getInstance().getConfigDir().resolve("my_mod.json5"))
+					.setJson5(true)
+					.build())
+			.build();
+	
+	public static Screen createConfigScreen(Screen parent) {
+		var yaclScreen = YetAnotherConfigLib.createBuilder()
+				.title(Text.translatable("config.screen.mousewheelie"))
+				.category(ConfigCategory.createBuilder()
+						.name(Text.translatable("config.screen.mousewheelie.general"))
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.general.interaction-rate"))
+								.binding(10, () -> interactionRate, value -> interactionRate = value)
+								.controller(opt -> IntegerFieldControllerBuilder.create(opt)
+										.min(1).max(Integer.MAX_VALUE)
+								)
+								.build())
+						.option(Option.<Integer>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.general.integrated-interaction-rate"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.general.integrated-interaction-rate.description")))
+								.binding(1, () -> integratedInteractionRate, value -> integratedInteractionRate = value)
+								.controller(opt -> IntegerFieldControllerBuilder.create(opt)
+										.min(1).max(Integer.MAX_VALUE)
+								)
+								.build())
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.general.enable-quick-armor-swapping"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.general.enable-quick-armor-swapping.description")))
+								.binding(true, () -> enableQuickArmorSwapping, value -> enableQuickArmorSwapping = value)
+								.controller(TickBoxControllerBuilder::create)
+								.build()
+						)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.general.enable-drop-modifier"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.general.enable-drop-modifier.description")))
+								.binding(true, () -> enableDropModifier, value -> enableDropModifier = value)
+								.controller(TickBoxControllerBuilder::create)
+								.build()
+						)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.general.enable-quick-craft"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.general.enable-quick-craft.description")))
+								.binding(true, () -> enableQuickCraft, value -> enableQuickCraft = value)
+								.controller(TickBoxControllerBuilder::create)
+								.build()
+						)
+						.option(Option.<ItemStackUtils.ComponentTypeMatchMode>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.general.item-kinds-nbt-match-mode"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.general.item-kinds-nbt-match-mode.description")))
+								.binding(ItemStackUtils.ComponentTypeMatchMode.SOME, () -> itemComponentMatchMode, value -> itemComponentMatchMode = value)
+								.controller(EnumDropdownControllerBuilder::create)
+								.build()
+						)
+						.option(Option.<HotbarScoping>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.general.hotbar-scoping"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.general.hotbar-scoping.description")))
+								.binding(HotbarScoping.SOFT, () -> hotbarScoping, value -> hotbarScoping = value)
+								.controller(EnumDropdownControllerBuilder::create)
+								.build()
+						)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.general.better-fast-dragging"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.general.better-fast-dragging.description")))
+								.binding(false, () -> betterFastDragging, value -> betterFastDragging = value)
+								.controller(TickBoxControllerBuilder::create)
+								.build()
+						)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.general.enable-bundle-dragging"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.general.enable-bundle-dragging.description")))
+								.binding(true, () -> enableBundleDragging, value -> enableBundleDragging = value)
+								.controller(TickBoxControllerBuilder::create)
+								.build()
+						)
+						.build())
+				.category(ConfigCategory.createBuilder()
+						.name(Text.translatable("config.screen.mousewheelie.scrolling"))
+						.tooltip(Text.translatable("config.screen.mousewheelie.scrolling.description"))
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.scrolling.enable"))
+								.binding(true, () -> enable, value -> enable = value)
+								.controller(TickBoxControllerBuilder::create)
+								.build()
+						)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.scrolling.invert"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.scrolling.invert.description")))
+								.binding(false, () -> invert, value -> invert = value)
+								.controller(TickBoxControllerBuilder::create)
+								.build()
+						)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.scrolling.directional-scrolling"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.scrolling.directional-scrolling.description")))
+								.binding(true, () -> directionalScrolling, value -> directionalScrolling = value)
+								.controller(TickBoxControllerBuilder::create)
+								.build()
+						)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.scrolling.scroll-creative-menu-items"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.scrolling.scroll-creative-menu-items.description")))
+								.binding(true, () -> scrollCreativeMenuItems, value -> scrollCreativeMenuItems = value)
+								.controller(TickBoxControllerBuilder::create)
+								.build()
+						)
+						.option(Option.<Boolean>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.scrolling.scroll-creative-menu-tabs"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.scrolling.scroll-creative-menu-tabs.description")))
+								.binding(true, () -> scrollCreativeMenuTabs, value -> scrollCreativeMenuTabs = value)
+								.controller(TickBoxControllerBuilder::create)
+								.build()
+						)
+						.build())
+				.category(ConfigCategory.createBuilder()
+						.name(Text.translatable("config.screen.mousewheelie.sort"))
+						.tooltip(Text.translatable("config.screen.mousewheelie.sort.description"))
+						.option(Option.<SortMode>createBuilder()
+								.name(Text.translatable("config.screen.mousewheelie.sort.primary-sort"))
+								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.sort.primary-sort.description")))
+								.binding(SortMode.CREATIVE, () -> primarySort, value -> primarySort = value)
+								.controller(opt -> EnumDropdownControllerBuilder.create(opt))
+								.build()
+						)
+						.build())
+				.build()
+				.generateScreen(parent);
+	
+		return null;
 	}
-
-	public static Scrolling scrolling = new Scrolling();
-
-	@AConfigBackground("textures/block/dark_prismarine.png")
-	public static class Scrolling {
-		public boolean enable = true;
-		public boolean invert = false;
-		public boolean directionalScrolling = true;
-		public boolean scrollCreativeMenuItems = true;
-		public boolean scrollCreativeMenuTabs = true;
-	}
-
-	public static Sort sort = new Sort();
-
-	@AConfigBackground("textures/block/barrel_top.png")
-	public static class Sort {
-		public SortMode primarySort = SortMode.CREATIVE;
-		public SortMode shiftSort = SortMode.QUANTITY;
-		public SortMode controlSort = SortMode.ALPHABET;
-		public boolean serverAcceleratedSorting = true;
-
-		@AConfigEntry(scope = ConfigScope.SMALLEST)
-		public boolean optimizeCreativeSearchSort = true;
-
-		@AConfigListener("optimize-creative-search-sort")
-		public void onReloadOptimizeCreativeSearchSort() {
-			CreativeSearchOrder.refreshItemSearchPositionLookup();
-		}
-	}
+	
+	
+	
+	// General
+	@SerialEntry
+	public static int interactionRate = 10;
+	
+	public static int integratedInteractionRate = 1;
+	
+	public static boolean enableQuickArmorSwapping = true;
+	
+	public static boolean enableDropModifier = true;
+	
+	public static boolean enableQuickCraft = true;
+	
+	public static ItemStackUtils.ComponentTypeMatchMode itemComponentMatchMode = ItemStackUtils.ComponentTypeMatchMode.SOME;
+	
+	public enum HotbarScoping {HARD, SOFT, NONE}
+	
+	public static HotbarScoping hotbarScoping = HotbarScoping.SOFT;
+	
+	public static boolean betterFastDragging = false;
+	
+	public static boolean enableBundleDragging = true;
+	
+	
+	// Scrolling
+	public static boolean enable = true;
+	
+	public static boolean invert = false;
+	
+	public static boolean directionalScrolling = true;
+	
+	public static boolean scrollCreativeMenuItems = true;
+	
+	public static boolean scrollCreativeMenuTabs = true;
+	
+	
+	// Sort
+	public static SortMode primarySort = SortMode.CREATIVE;
+	
+	public static SortMode shiftSort = SortMode.QUANTITY;
+	
+	public static SortMode controlSort = SortMode.ALPHABET;
+	
+	public static boolean serverAcceleratedSorting = true;
+	
+	public static boolean optimizeCreativeSearchSort = true;
+	
+	
 
 	public static Refill refill = new Refill();
 

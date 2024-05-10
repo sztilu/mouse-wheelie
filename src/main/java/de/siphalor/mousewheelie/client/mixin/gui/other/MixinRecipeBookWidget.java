@@ -112,7 +112,7 @@ public abstract class MixinRecipeBookWidget implements IRecipeBookWidget {
 
 	@Inject(method = "mouseClicked", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerInteractionManager;clickRecipe(ILnet/minecraft/recipe/RecipeEntry;Z)V", shift = At.Shift.AFTER))
 	public void mouseClicked(double x, double y, int mouseButton, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-		if (MWConfig.general.enableQuickCraft & mouseButton == 1) {
+		if (MWConfig.enableQuickCraft & mouseButton == 1) {
 			int resSlot = craftingScreenHandler.getCraftingResultSlotIndex();
 			RecipeEntry<?> recipe = recipesArea.getLastClickedRecipe();
 			if (canCraftMore(recipe)) {
@@ -125,7 +125,7 @@ public abstract class MixinRecipeBookWidget implements IRecipeBookWidget {
 
 	@Inject(method = "keyPressed", at = @At("HEAD"), cancellable = true)
 	public void keyPressed(int int1, int int2, int int3, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-		if (MWConfig.general.enableQuickCraft && isOpen() && !client.player.isSpectator()) {
+		if (MWConfig.enableQuickCraft && isOpen() && !client.player.isSpectator()) {
 			if (MinecraftClient.getInstance().options.dropKey.matchesKey(int1, int2)) {
 				searching = false;
 				RecipeEntry<?> oldRecipeEntry = recipesArea.getLastClickedRecipe();

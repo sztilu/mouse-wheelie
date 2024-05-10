@@ -60,7 +60,7 @@ public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScre
 
 	@Override
 	public ScrollAction mouseWheelie_onMouseScrolledSpecial(double mouseX, double mouseY, double scrollAmount) {
-		if (MWConfig.scrolling.scrollCreativeMenuTabs) {
+		if (MWConfig.scrollCreativeMenuTabs) {
 			double relMouseY = mouseY - this.y;
 			double relMouseX = mouseX - this.x;
 			boolean yOverTopTabs = (-32 <= relMouseY && relMouseY <= 0);
@@ -89,8 +89,8 @@ public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScre
 			}
 		}
 
-		if (MWConfig.scrolling.enable && !isInventoryTabSelected()) {
-			if (MWConfig.scrolling.scrollCreativeMenuItems == hasAltDown())
+		if (MWConfig.enable && !isInventoryTabSelected()) {
+			if (MWConfig.scrollCreativeMenuItems == hasAltDown())
 				return ScrollAction.ABORT;
 			Slot hoverSlot = this.mouseWheelie_getSlotAt(mouseX, mouseY);
 			if (hoverSlot != null) {

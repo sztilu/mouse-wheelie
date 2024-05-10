@@ -41,7 +41,7 @@ public class MixinMerchantWidgetButtonPage implements ISpecialClickableButtonWid
 
 	@Override
 	public boolean mouseClicked(int mouseButton) {
-		if (mouseButton != 1 || !MWConfig.general.enableQuickCraft) return false;
+		if (mouseButton != 1 || !MWConfig.enableQuickCraft) return false;
 		MinecraftClient minecraft = MinecraftClient.getInstance();
 		Screen screen = minecraft.currentScreen;
 		if (screen instanceof IMerchantScreen) {

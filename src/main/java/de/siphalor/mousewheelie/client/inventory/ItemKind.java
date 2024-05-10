@@ -37,11 +37,11 @@ public class ItemKind {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ItemKind that = (ItemKind) o;
-		return ItemStackUtils.areItemsOfSameKind(stack, that.stack, MWConfig.general.itemComponentMatchMode);
+		return ItemStackUtils.areItemsOfSameKind(stack, that.stack, MWConfig.itemComponentMatchMode);
 	}
 
 	@Override
 	public int hashCode() {
-		return ItemStackUtils.hashByKind(stack, MWConfig.general.itemComponentMatchMode);
+		return ItemStackUtils.hashByKind(stack, MWConfig.itemComponentMatchMode);
 	}
 }

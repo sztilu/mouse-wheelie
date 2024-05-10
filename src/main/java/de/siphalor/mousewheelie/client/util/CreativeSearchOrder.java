@@ -55,7 +55,7 @@ public class CreativeSearchOrder {
 
 	// Called on config change and when the feature set changes (on world join)
 	public static void refreshItemSearchPositionLookup() {
-		if (MWConfig.sort.optimizeCreativeSearchSort) {
+		if (MWConfig.optimizeCreativeSearchSort) {
 			MinecraftClient client = MinecraftClient.getInstance();
 			if (client.world == null) {
 				return;

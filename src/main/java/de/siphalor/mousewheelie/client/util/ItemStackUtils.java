@@ -149,7 +149,7 @@ public class ItemStackUtils {
     }
     
     public static boolean areItemsOfSameKind(ItemStack stack1, ItemStack stack2) {
-        return areItemsOfSameKind(stack1, stack2, MWConfig.general.itemComponentMatchMode);
+        return areItemsOfSameKind(stack1, stack2, MWConfig.itemComponentMatchMode);
     }
     
     public static boolean areItemsOfSameKind(ItemStack stack1, ItemStack stack2, ComponentTypeMatchMode mode) {

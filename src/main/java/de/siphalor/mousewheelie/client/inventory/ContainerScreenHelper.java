@@ -136,7 +136,7 @@ public class ContainerScreenHelper<T extends HandledScreen<?>> {
 	public void scroll(Slot referenceSlot, boolean scrollUp) {
 		// Shall send determines whether items from the referenceSlot shall be moved to another scope. Otherwise the referenceSlot will receive items.
 		boolean shallSend;
-		if (MWConfig.scrolling.directionalScrolling) {
+		if (MWConfig.directionalScrolling) {
 			shallSend = shallChangeInventory(referenceSlot, scrollUp);
 		} else {
 			shallSend = !scrollUp;
@@ -248,8 +248,8 @@ public class ContainerScreenHelper<T extends HandledScreen<?>> {
 		} else {
 			if (slot.inventory instanceof PlayerInventory) {
 				if (isHotbarSlot(slot)) {
-					if (MWConfig.general.hotbarScoping == MWConfig.General.HotbarScoping.HARD
-							|| MWConfig.general.hotbarScoping == MWConfig.General.HotbarScoping.SOFT && preferSmallerScopes) {
+					if (MWConfig.hotbarScoping == MWConfig.HotbarScoping.HARD
+							|| MWConfig.hotbarScoping == MWConfig.HotbarScoping.SOFT && preferSmallerScopes) {
 						return -1;
 					}
 				}

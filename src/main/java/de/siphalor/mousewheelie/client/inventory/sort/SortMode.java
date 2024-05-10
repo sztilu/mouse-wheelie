@@ -21,7 +21,6 @@ import de.siphalor.mousewheelie.MWConfig;
 import de.siphalor.mousewheelie.client.util.CreativeSearchOrder;
 import de.siphalor.mousewheelie.client.util.ItemStackUtils;
 import de.siphalor.mousewheelie.client.util.StackMatcher;
-import de.siphalor.tweed4.tailor.DropdownMaterial;
 import it.unimi.dsi.fastutil.ints.IntArrays;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -33,7 +32,7 @@ import net.minecraft.registry.Registries;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 
-public abstract class SortMode implements DropdownMaterial<SortMode> {
+public abstract class SortMode {
 	private static final Map<String, SortMode> SORT_MODES = new HashMap<>();
 	private final String name;
 
@@ -66,26 +65,8 @@ public abstract class SortMode implements DropdownMaterial<SortMode> {
 	public int[] sort(int[] sortIds, ItemStack[] stacks, SortContext context) {
 		return sortIds;
 	}
-
-	@Override
-	public DropdownMaterial<SortMode> valueOf(String s) {
-		return SORT_MODES.get(s);
-	}
-
-	@Override
-	public Collection<SortMode> values() {
-		return SORT_MODES.values();
-	}
-
-	@Override
-	public String name() {
-		return name;
-	}
-
-	@Override
-	public String getTranslationKey() {
-		return "mousewheelie.sortmode." + name.toLowerCase(Locale.ENGLISH);
-	}
+	
+	
 
 	private static void sortByValues(int[] sortIds, ItemStack[] stacks, int[] values) {
 		IntArrays.quickSort(sortIds, (a, b) -> {
@@ -98,7 +79,7 @@ public abstract class SortMode implements DropdownMaterial<SortMode> {
 	}
 
 	static {
-		NONE = register("none", new SortMode("none") {});
+		NONE = register("none", new SortMode("none"));
 		ALPHABET = register("alphabet", new SortMode("alphabet") {
 			@Override
 			public int[] sort(int[] sortIds, ItemStack[] stacks, SortContext context) {
@@ -129,7 +110,7 @@ public abstract class SortMode implements DropdownMaterial<SortMode> {
 			@Override
 			public int[] sort(int[] sortIds, ItemStack[] stacks, SortContext context) {
 				int[] sortValues = new int[sortIds.length];
-				if (MWConfig.sort.optimizeCreativeSearchSort) {
+				if (MWConfig.optimizeCreativeSearchSort) {
 					Lock lock = CreativeSearchOrder.getReadLock();
 					lock.lock();
 					for (int i = 0; i < stacks.length; i++) {

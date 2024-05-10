@@ -41,7 +41,7 @@ public class MouseWheelie implements ModInitializer {
 
 	private TypedActionResult<ItemStack> onPlayerUseItem(PlayerEntity player, World world, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
-		if (MWConfig.general.enableQuickArmorSwapping && !world.isClient()) {
+		if (MWConfig.enableQuickArmorSwapping && !world.isClient()) {
 			EquipmentSlot equipmentSlot = MobEntity.getPreferredEquipmentSlot(stack);
 			if (equipmentSlot.getType() == EquipmentSlot.Type.ARMOR) {
 				ItemStack equipmentStack = player.getEquippedStack(equipmentSlot);
