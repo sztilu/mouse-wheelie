@@ -21,19 +21,26 @@ import de.siphalor.mousewheelie.MWConfig;
 import de.siphalor.mousewheelie.client.inventory.ContainerScreenHelper;
 import de.siphalor.mousewheelie.client.network.InteractionManager;
 import de.siphalor.mousewheelie.client.network.MWClientNetworking;
+import de.siphalor.mousewheelie.client.util.CreativeSearchOrder;
+import de.siphalor.mousewheelie.client.util.ItemStackUtils;
+import de.siphalor.mousewheelie.client.util.StackMatcher;
 import de.siphalor.mousewheelie.client.util.inject.ISlot;
 import de.siphalor.mousewheelie.common.network.ReorderInventoryPayload;
+import it.unimi.dsi.fastutil.ints.IntArrays;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
+import java.util.*;
+import java.util.concurrent.locks.Lock;
 
 @Environment(EnvType.CLIENT)
 public class InventorySorter {
@@ -125,7 +132,7 @@ public class InventorySorter {
 		}
 	}
 
-	public void sort(SortMode sortMode) {
+	public void sort(MWConfig.SORTMODES sortMode) {
 		if (inventorySlots.length <= 1) {
 			return;
 		}
@@ -136,13 +143,117 @@ public class InventorySorter {
 			sortIds[i] = i;
 		}
 
-		sortIds = sortMode.sort(sortIds, stacks, new SortContext(containerScreen, Arrays.asList(inventorySlots)));
+		switch (sortMode) {
+			case NONE -> {}
+			case ALPHABET -> {
+				String[] strings = new String[sortIds.length];
+				for (int i = 0; i < sortIds.length; i++) {
+					ItemStack stack = stacks[i];
+					strings[i] = stack.isEmpty() ? "" : stack.getName().getString();
+				}
+				
+				IntArrays.quickSort(sortIds, (a, b) -> {
+					if (strings[a].equals("")) {
+						if (strings[b].equals(""))
+							return 0;
+						return 1;
+					}
+					if (strings[b].equals("")) return -1;
+					int comp = strings[a].compareToIgnoreCase(strings[b]);
+					if (comp == 0) {
+						return ItemStackUtils.compareEqualItems(stacks[a], stacks[b]);
+					}
+					return comp;
+				});
+			}
+			case CREATIVE -> {
+				int[] sortValues = new int[sortIds.length];
+				if (MWConfig.optimizeCreativeSearchSort) {
+					Lock lock = CreativeSearchOrder.getReadLock();
+					lock.lock();
+					for (int i = 0; i < stacks.length; i++) {
+						sortValues[i] = CreativeSearchOrder.getStackSearchPosition(stacks[i]);
+					}
+					lock.unlock();
+				} else {
+					Collection<ItemStack> displayStacks = ItemGroups.getSearchGroup().getDisplayStacks();
+					List<ItemStack> displayStackList;
+					if (displayStacks instanceof List) {
+						displayStackList = (List<ItemStack>) displayStacks;
+					} else {
+						displayStackList = new ArrayList<>(displayStacks);
+					}
+					Object2IntMap<StackMatcher> lookup = new Object2IntOpenHashMap<>(stacks.length);
+					for (int i = 0; i < stacks.length; i++) {
+						final ItemStack stack = stacks[i];
+						sortValues[i] = lookup.computeIfAbsent(StackMatcher.of(stack), matcher -> {
+							int index = displayStackList.indexOf(matcher);
+							if (index == -1) {
+								return lookup.computeIfAbsent(StackMatcher.ignoreNbt(stack), matcher2 -> {
+									int plainIndex = displayStackList.indexOf(matcher2);
+									if (plainIndex == -1) {
+										return Integer.MAX_VALUE;
+									}
+									return plainIndex;
+								});
+							}
+							return index;
+						});
+					}
+				}
+				sortByValues(sortIds, stacks, sortValues);
+			}
+			case QUANTITY -> {
+				HashMap<Item, Integer> itemToAmountMap = new HashMap<>();
+				
+				for (ItemStack stack : stacks) {
+					if (stack.isEmpty()) continue;
+					if (!itemToAmountMap.containsKey(stack.getItem())) {
+						itemToAmountMap.put(stack.getItem(), stack.getCount());
+					} else {
+						itemToAmountMap.put(stack.getItem(), itemToAmountMap.get(stack.getItem()) + stack.getCount());
+					}
+				}
+				
+				IntArrays.quickSort(sortIds, (a, b) -> {
+					ItemStack stack = stacks[a];
+					ItemStack stack2 = stacks[b];
+					if (stack.isEmpty()) {
+						return stack2.isEmpty() ? 0 : 1;
+					}
+					if (stack2.isEmpty()) {
+						return -1;
+					}
+					Integer amountA = itemToAmountMap.get(stack.getItem());
+					Integer amountB = itemToAmountMap.get(stack2.getItem());
+					int cmp = Integer.compare(amountB, amountA);
+					if (cmp != 0) {
+						return cmp;
+					}
+					return ItemStackUtils.compareEqualItems(stack, stack2);
+				});
+			}
+			case RAW_ID -> {
+				int[] rawIds = Arrays.stream(stacks).mapToInt(stack -> stack.isEmpty() ? Integer.MAX_VALUE : Registries.ITEM.getRawId(stack.getItem())).toArray();
+				sortByValues(sortIds, stacks, rawIds);
+			}
+		}
 
 		if (MWConfig.serverAcceleratedSorting && MWClientNetworking.canSendReorderPacket()) {
 			this.reorderInventory(sortIds);
 		} else {
 			this.sortOnClient(sortIds);
 		}
+	}
+	
+	private static void sortByValues(int[] sortIds, ItemStack[] stacks, int[] values) {
+		IntArrays.quickSort(sortIds, (a, b) -> {
+			int cmp = Integer.compare(values[a], values[b]);
+			if (cmp != 0) {
+				return cmp;
+			}
+			return ItemStackUtils.compareEqualItems(stacks[a], stacks[b]);
+		});
 	}
 
 	protected void reorderInventory(int[] sortedIds) {

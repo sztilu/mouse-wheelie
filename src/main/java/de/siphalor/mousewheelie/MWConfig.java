@@ -20,7 +20,6 @@ package de.siphalor.mousewheelie;
 import com.google.common.base.CaseFormat;
 import com.terraformersmc.modmenu.config.option.BooleanConfigOption;
 import de.siphalor.mousewheelie.client.MWClient;
-import de.siphalor.mousewheelie.client.inventory.sort.SortMode;
 import de.siphalor.mousewheelie.client.network.InteractionManager;
 import de.siphalor.mousewheelie.client.util.CreativeSearchOrder;
 import de.siphalor.mousewheelie.client.util.ItemStackUtils;
@@ -164,11 +163,11 @@ public class MWConfig {
 				.category(ConfigCategory.createBuilder()
 						.name(Text.translatable("config.screen.mousewheelie.sort"))
 						.tooltip(Text.translatable("config.screen.mousewheelie.sort.description"))
-						.option(Option.<SortMode>createBuilder()
+						.option(Option.<SORTMODES>createBuilder()
 								.name(Text.translatable("config.screen.mousewheelie.sort.primary-sort"))
 								.description(OptionDescription.of(Text.translatable("config.screen.mousewheelie.sort.primary-sort.description")))
-								.binding(SortMode.CREATIVE, () -> primarySort, value -> primarySort = value)
-								.controller(opt -> EnumDropdownControllerBuilder.create(opt))
+								.binding(SORTMODES.CREATIVE, () -> primarySort, value -> primarySort = value)
+								.controller(EnumDropdownControllerBuilder::create)
 								.build()
 						)
 						.build())
@@ -216,11 +215,15 @@ public class MWConfig {
 	
 	
 	// Sort
-	public static SortMode primarySort = SortMode.CREATIVE;
+	public enum SORTMODES {
+		NONE, ALPHABET, CREATIVE, QUANTITY, RAW_ID
+	}
 	
-	public static SortMode shiftSort = SortMode.QUANTITY;
+	public static SORTMODES primarySort = SORTMODES.CREATIVE;
 	
-	public static SortMode controlSort = SortMode.ALPHABET;
+	public static SORTMODES shiftSort = SORTMODES.QUANTITY;
+	
+	public static SORTMODES controlSort = SORTMODES.ALPHABET;
 	
 	public static boolean serverAcceleratedSorting = true;
 	

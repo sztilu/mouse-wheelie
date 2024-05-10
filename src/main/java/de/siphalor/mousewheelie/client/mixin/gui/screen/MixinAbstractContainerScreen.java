@@ -23,7 +23,6 @@ import de.siphalor.mousewheelie.client.inventory.BundleDragMode;
 import de.siphalor.mousewheelie.client.MWClient;
 import de.siphalor.mousewheelie.client.inventory.ContainerScreenHelper;
 import de.siphalor.mousewheelie.client.inventory.sort.InventorySorter;
-import de.siphalor.mousewheelie.client.inventory.sort.SortMode;
 import de.siphalor.mousewheelie.client.network.InteractionManager;
 import de.siphalor.mousewheelie.client.util.ScrollAction;
 import de.siphalor.mousewheelie.client.util.inject.IContainerScreen;
@@ -296,7 +295,7 @@ public abstract class MixinAbstractContainerScreen extends Screen implements ICo
 			return false;
 		
 		InventorySorter sorter = new InventorySorter(screenHelper.get(), (HandledScreen<?>) (Object) this, focusedSlot);
-		SortMode sortMode;
+		MWConfig.SORTMODES sortMode;
 		if (hasShiftDown()) {
 			sortMode = MWConfig.shiftSort;
 		} else if (hasControlDown()) {
