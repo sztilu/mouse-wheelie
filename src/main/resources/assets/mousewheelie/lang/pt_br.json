@@ -97,5 +97,11 @@
     "config.screen.mousewheelie.tool-picking.pick-from-inventory": "Seleciona de todo o inventário",
     "config.screen.mousewheelie.tool-picking.pick-from-inventory.description": "Permite selecionar ferramentas do inventário inteiro.\nSe desabilitado, só irá selecionar da hotbar.",
     "key.mousewheelie.restock_modifier": "Modificador de Reabastecimento",
-    "key.mousewheelie.deposit_modifier": "Modificador de Depósito"
+    "key.mousewheelie.deposit_modifier": "Modificador de Depósito",
+    "config.screen.mousewheelie.sort.server-accelerated-sorting": "Server accelerated sorting",
+    "config.screen.mousewheelie.sort.server-accelerated-sorting.description": "Whether to use close to instant sorting when in singleplayer or if Mouse Wheelie is installed on the server.",
+    "config.screen.mousewheelie.refill.play-sound": "Play refill sound",
+    "config.screen.mousewheelie.refill.play-sound.description": "Plays a sound after refilling a stack.",
+    "config.screen.mousewheelie.refill.item-changes": "Refill when current item changes",
+    "config.screen.mousewheelie.refill.item-changes.description": "Refill when the item just used changes to a different item.\nThis is e.g. triggered when filling or emptying water buckets."
 }

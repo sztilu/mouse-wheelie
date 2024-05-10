@@ -93,5 +93,15 @@
     "config.screen.mousewheelie.refill.restore-selected-slot.description": "将补充的物品恢复到最初选择的槽位。\n这会花费更多时间。在网络连接较慢时建议关闭此选项。",
     "config.screen.mousewheelie.refill.rules.description": "配置用哪种新物品来自动补充之前的物品。",
     "config.screen.mousewheelie.sort.server-accelerated-sorting.description": "在单人游戏或在服务器上安装了 Mouse Wheelie 时是否使用接近即时的排序。",
-    "config.screen.mousewheelie.general.enable-bundle-dragging.description": "允许点击并拖动物品栏中的成组物品，以轻松放入或取出多组。"
+    "config.screen.mousewheelie.general.enable-bundle-dragging.description": "允许点击并拖动物品栏中的成组物品，以轻松放入或取出多组。",
+    "key.mousewheelie.whole_stack_modifier": "Whole Stack Modifier",
+    "key.mousewheelie.all_of_kind_modifier": "All of Kind Modifier",
+    "key.mousewheelie.drop_modifier": "Drop Modifier",
+    "key.mousewheelie.deposit_modifier": "Deposit Modifier",
+    "key.mousewheelie.restock_modifier": "Restock Modifier",
+    "mousewheelie.sortmode.creative": "Creative Search",
+    "config.screen.mousewheelie.sort.server-accelerated-sorting": "Server accelerated sorting",
+    "config.screen.mousewheelie.refill.play-sound": "Play refill sound",
+    "config.screen.mousewheelie.refill.play-sound.description": "Plays a sound after refilling a stack.",
+    "config.screen.mousewheelie.refill.restore-selected-slot": "Restore selected slot"
 }

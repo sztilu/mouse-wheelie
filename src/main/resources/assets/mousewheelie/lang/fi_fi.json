@@ -101,5 +101,7 @@
     "config.screen.mousewheelie.refill.rules.block-hierarchy.description": "Yritä löytää samankaltaisia blokkeja blokkityyppihierarkian avulla.\nTämä viittaa yleensä samankaltaiseen toiminnallisuuteen.",
     "config.screen.mousewheelie.refill.rules.equal-items": "Täytä samalla esineellä (ei NBT:tä)",
     "config.screen.mousewheelie.refill.rules.equal-stacks": "Täytä samalla pinolla (NBT)",
-    "config.screen.mousewheelie.refill.rules.equal-stacks.description": "Yritä löytää samanlaiset pinot (NBT yhteensovitus)."
+    "config.screen.mousewheelie.refill.rules.equal-stacks.description": "Yritä löytää samanlaiset pinot (NBT yhteensovitus).",
+    "config.screen.mousewheelie.refill.play-sound": "Play refill sound",
+    "config.screen.mousewheelie.refill.play-sound.description": "Plays a sound after refilling a stack."
 }

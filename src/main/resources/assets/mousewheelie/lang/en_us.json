@@ -85,7 +85,7 @@
     "config.screen.mousewheelie.refill.rules.any-block": "Refill with any blocks",
     "config.screen.mousewheelie.refill.rules.any-block.description": "Tries to find any other block items.",
     "config.screen.mousewheelie.refill.rules.itemgroup": "Refill by item groups",
-    "config.screen.mousewheelie.refill.rcaules.itemgroup.description": "Find items that are in the same creative inventory tab.",
+    "config.screen.mousewheelie.refill.rules.itemgroup.description": "Find items that are in the same creative inventory tab.",
     "config.screen.mousewheelie.refill.rules.item-hierarchy": "Refill with similar items",
     "config.screen.mousewheelie.refill.rules.item-hierarchy.description": "Try to find similar items through the item type hierarchy.\nThis usually indicates a similar functionality.",
     "config.screen.mousewheelie.refill.rules.block-hierarchy": "Refill blocks with similar blocks",
