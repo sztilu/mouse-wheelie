@@ -36,16 +36,14 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
+
 
 @Environment(EnvType.CLIENT)
 @CustomLog
 public class InteractionManager {
 	private static final Queue<InteractionEvent> interactionEventQueue = new ArrayDeque<>();
 	private static final ScheduledThreadPoolExecutor scheduledExecutor = new ScheduledThreadPoolExecutor(1);
-	private static ScheduledFuture<?> tickFuture;
-	
-	private static Logger log = Logger.getLogger("MW Interaction Manager");
+	private static ScheduledFuture<?> tickFuture;;
 
 
 	public static final Waiter DUMMY_WAITER = (TriggerType triggerType) -> true;
@@ -136,7 +134,7 @@ public class InteractionManager {
 		try {
 			triggerSend(TriggerType.TICK);
 		} catch (Exception e) {
-			log.severe("Error while ticking InteractionManager" + e);
+			log.error("Error while ticking InteractionManager ", e);
 		}
 	}
 

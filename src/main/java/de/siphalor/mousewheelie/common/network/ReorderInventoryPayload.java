@@ -25,12 +25,9 @@ import net.minecraft.network.packet.CustomPayload;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.logging.Logger;
 
 @CustomLog
 public record ReorderInventoryPayload(int syncId, int[] slotMappings) implements CustomPayload {
-	
-	private static Logger log = Logger.getLogger("MW Networking");
 
 	public static final PacketCodec<PacketByteBuf, ReorderInventoryPayload> CODEC =
 			PacketCodec.of(ReorderInventoryPayload::write, ReorderInventoryPayload::read);
@@ -51,18 +48,10 @@ public record ReorderInventoryPayload(int syncId, int[] slotMappings) implements
 		int[] reorderedIndices = buf.readIntArray();
 
 		if (reorderedIndices.length % 2 != 0) {
-			log.warning("Received reorder inventory packet with invalid data!");
+			log.warn("Received reorder inventory packet with invalid data!");
 			return null;
 		}
 
 		return new ReorderInventoryPayload(syncId, reorderedIndices);
-	}
-
-    public int getSyncId() {
-		return syncId;
-    }
-
-	public int[] getSlotMappings() {
-		return slotMappings;
 	}
 }
