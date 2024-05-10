@@ -32,6 +32,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +42,8 @@ import java.util.stream.Collectors;
 public class MWLogicalServerNetworking {
 
 	private MWLogicalServerNetworking() {}
+	
+	private static Logger log = Logger.getLogger("MW Networking");
 
 	public static void setup() {
 		PayloadTypeRegistry.playC2S().register(ReorderInventoryPayload.ID, ReorderInventoryPayload.CODEC);
@@ -51,12 +54,12 @@ public class MWLogicalServerNetworking {
 
 	private static void onReorderInventoryPacket(MinecraftServer server, ServerPlayerEntity player, ReorderInventoryPayload payload) {
 		if (payload == null) {
-			log.warn("Failed to read reorder inventory packet from player {}!", player);
+			log.warning("Failed to read reorder inventory packet from player " + player.getName().getString() + "!");
 			return;
 		}
 
 		if (player.currentScreenHandler == null) {
-			log.warn("Player {} tried to reorder inventory without having an open container!", player);
+			log.warning("Player " + player.getName().getString() + " tried to reorder inventory without having an open container!");
 			return;
 		}
 
@@ -69,7 +72,7 @@ public class MWLogicalServerNetworking {
 
 	private static void reorder(PlayerEntity player, ScreenHandler screenHandler, int[] slotMapping) {
 		if (!checkReorder(player, screenHandler, slotMapping)) {
-			log.warn("Reorder inventory packet from player {} contains invalid data, ignoring!", player);
+			log.warning("Reorder inventory packet from player " + player.getName().getString() + " contains invalid data, ignoring!");
 			return;
 		}
 
@@ -85,7 +88,7 @@ public class MWLogicalServerNetworking {
 
 	private static boolean checkReorder(PlayerEntity player, ScreenHandler screenHandler, int[] slotMappings) {
 		if (slotMappings.length < 4) {
-			log.warn("Reorder inventory packet contains too few slots!");
+			log.warning("Reorder inventory packet contains too few slots!");
 			return false;
 		}
 
@@ -103,7 +106,7 @@ public class MWLogicalServerNetworking {
 				return false;
 			}
 			if (!requestedSlots.add(originSlotId)) {
-				log.warn("Reorder inventory packet contains duplicate origin slot {}!", originSlotId);
+				log.warning("Reorder inventory packet contains duplicate origin slot " + originSlotId + "!");
 				return false;
 			}
 
@@ -117,12 +120,12 @@ public class MWLogicalServerNetworking {
 
 			Slot originSlot = screenHandler.getSlot(originSlotId);
 			if (!originSlot.canTakeItems(player)) {
-				log.warn("Player {} tried to reorder slot {}, but that slot doesn't allow taking items!", player, originSlotId);
+				log.warning("Player " + player.getName().getString() + " tried to reorder slot " + originSlotId + ", but that slot doesn't allow taking items!");
 				return false;
 			}
 			Slot destSlot = screenHandler.getSlot(destSlotId);
 			if (!destSlot.canInsert(originSlot.getStack())) {
-				log.warn("Player {} tried to reorder slot {}, but that slot doesn't allow inserting the origin stack!", player, destSlotId);
+				log.warning("Player " + player.getName().getString() + " tried to reorder slot " + destSlotId + ", but that slot doesn't allow inserting the origin stack!");
 				return false;
 			}
 		}
@@ -130,12 +133,12 @@ public class MWLogicalServerNetworking {
 		for (int i = 1; i < slotMappings.length; i += 2) {
 			int destSlotId = slotMappings[i];
 			if (!requestedSlots.remove(destSlotId)) {
-				log.warn("Reorder inventory packet contains duplicate destination slot or slot without origin: {}!", i);
+				log.warning("Reorder inventory packet contains duplicate destination slot or slot without origin: " + i + "!");
 				return false;
 			}
 		}
 		if (!requestedSlots.isEmpty()) {
-			log.error("Invalid state during checking reorder packet, please report this to the {} bug tracker. Requested slots: {}", MouseWheelie.MOD_NAME, requestedSlots);
+			log.severe("Invalid state during checking reorder packet, please report this to the " + MouseWheelie.MOD_NAME + " bug tracker. Requested slots: " + requestedSlots);
 			return false;
 		}
 		return true;
@@ -144,12 +147,12 @@ public class MWLogicalServerNetworking {
 	private static boolean checkReorderSlot(ScreenHandler screenHandler, int slotId, Inventory targetInv) {
 		Slot slot = screenHandler.getSlot(slotId);
 		if (slot == null) {
-			log.warn("Reorder inventory packet contains invalid slot id!");
+			log.warning("Reorder inventory packet contains invalid slot id!");
 			return false;
 		}
 
 		if (targetInv != slot.inventory) {
-			log.warn("Reorder inventory packet contains slots from different inventories, first: {}, now: {}!", targetInv, slot.inventory);
+			log.warning("Reorder inventory packet contains slots from different inventories, first: " + targetInv + ", now: " + slot.inventory + "!");
 			return false;
 		}
 		return true;
