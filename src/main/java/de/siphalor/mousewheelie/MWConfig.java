@@ -34,7 +34,7 @@ import net.minecraft.util.Identifier;
 public class MWConfig {
     
     public static ConfigClassHandler<MWConfig> HANDLER = ConfigClassHandler.createBuilder(MWConfig.class)
-            .id(new Identifier("mouse-wheelie-config"))
+            .id(new Identifier("mouse-wheelie-config", "mousewheelie"))
             .serializer(config -> GsonConfigSerializerBuilder.create(config)
                     .setPath(FabricLoader.getInstance().getConfigDir().resolve("mouse-wheelie-config.json5"))
                     .setJson5(true)

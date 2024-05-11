@@ -76,7 +76,9 @@ public class MWClient implements ClientModInitializer {
 		KeyBindingHelper.registerKeyBinding(DROP_MODIFIER);
 		KeyBindingHelper.registerKeyBinding(DEPOSIT_MODIFIER);
 		KeyBindingHelper.registerKeyBinding(RESTOCK_MODIFIER);
-
+		
+		MWConfig.HANDLER.load();
+		
 		ClientPickBlockGatherCallback.EVENT.register((player, result) -> {
 			Item item = player.getMainHandStack().getItem();
 			int index = -1;
