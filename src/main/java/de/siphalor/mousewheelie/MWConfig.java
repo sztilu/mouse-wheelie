@@ -346,6 +346,7 @@ public class MWConfig {
                                 .build()
                         )
                         .build())
+                .save(() -> HANDLER.save())
                 .build()
                 .generateScreen(parent);
     }
