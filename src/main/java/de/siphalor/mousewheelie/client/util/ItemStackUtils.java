@@ -183,13 +183,13 @@ public class ItemStackUtils {
                     return hashCodeBuilder.toHashCode();
                 }
                 
-				componentMap.getTypes().stream().sorted().forEachOrdered(component -> {
-					if (component.equals(VertexFormatElement.ComponentType.valueOf("damage")) || component.equals(VertexFormatElement.ComponentType.valueOf("enchantments")))
-					{
-						return;
-					}
-					hashCodeBuilder.append(component.toString()).append(component);
-				});
+                for (Component component : componentMap)
+                {
+                    if (!(component.type().equals(DataComponentTypes.DAMAGE) || component.type().equals(DataComponentTypes.ENCHANTMENTS)))
+                    {
+                        hashCodeBuilder.append(component.type().toString()).append(component.value().toString());
+                    }
+                }
         }
         return 0; // unreachable
     }
