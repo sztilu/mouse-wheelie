@@ -24,6 +24,7 @@ import net.minecraft.client.render.VertexFormatElement;
 import net.minecraft.component.Component;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentMapImpl;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.DyedColorComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -53,16 +54,16 @@ public class ItemStackUtils {
     
     private static int compareEqualItems2(ItemStack a, ItemStack b) {
         // compare names
-        if (!a.getName().equals(a.getItem().getName())) // True means a has custom name
+        if (!a.contains(DataComponentTypes.CUSTOM_NAME)) // True means a has custom name
         {
-            if (b.getName().equals(b.getItem().getName())) // True means b does not have custom name
+            if (b.contains(DataComponentTypes.CUSTOM_NAME)) // True means b does not have custom name
             {
                 return -1;
             }
             return compareEqualItems3(a, b);
         }
         // a does not have custom name
-        if (!b.getName().equals(b.getItem().getName())) // true means b has custom name
+        if (!b.contains(DataComponentTypes.CUSTOM_NAME)) // true means b has custom name
         {
             return 1;
         }
@@ -119,10 +120,7 @@ public class ItemStackUtils {
     }
     
     public static ComponentMap getComponentOrEmpty(ItemStack stack) {
-        if (!stack.getComponentChanges().isEmpty()) {
-            return stack.getComponents();
-        }
-        return EMPTY_COMPONENT_MAP;
+        return stack.getComponentChanges().isEmpty() ? EMPTY_COMPONENT_MAP: stack.getComponents();
     }
     
     public static boolean areComponentsEqualExcept(ItemStack a, ItemStack b, String... componentNames) {
@@ -164,7 +162,7 @@ public class ItemStackUtils {
                 if (!ItemStack.areItemsEqual(stack1, stack2)) {
                     return false;
                 }
-                return areComponentsEqualExcept(stack1, stack2, VertexFormatElement.ComponentType.valueOf("damage").toString(), VertexFormatElement.ComponentType.valueOf("enchantments").toString());
+                return areComponentsEqualExcept(stack1, stack2, DataComponentTypes.DAMAGE.toString(),DataComponentTypes.ENCHANTMENTS.toString());
             }
         }
         return false; // unreachable
